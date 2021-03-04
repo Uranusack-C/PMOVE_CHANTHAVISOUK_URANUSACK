@@ -1,5 +1,6 @@
 package com.parkit.parkingsystem.integration;
 
+import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
@@ -14,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,7 +56,7 @@ public class ParkingDataBaseIT {
     }
 
     @Test
-    @DisplayName("Vérifie si le ticket est actuellement sauvé dans la BDD et si la table Parking est mis à jour avec la disponibilité")
+    @DisplayName("Vérifie si le ticket est actuellement sauvé dans la BDD et si la table Parking est mis à jour avec la disponibilité pour une voiture")
     public void testParkingACar() throws Exception{
         parkingService.processIncomingVehicule();
         assertEquals(ticketDAO.getTicket(inputReaderUtil.readVehiculeRegistrationNumber()).getVehiculeRegNumber(),
@@ -61,7 +64,18 @@ public class ParkingDataBaseIT {
         assertEquals(ticketDAO.getTicket(inputReaderUtil.readVehiculeRegistrationNumber()).getParkingSpot().isAvailable(),
         			 false);
     }
-
+    
+    @Test
+    @DisplayName("Vérifie si le ticket est actuellement sauvé dans la BDD et si la table Parking est mis à jour avec la disponibilité pour une moto")
+    public void testParkingABike() throws Exception{
+    	when(inputReaderUtil.readSelection()).thenReturn(2);
+        parkingService.processIncomingVehicule();
+        assertEquals(ticketDAO.getTicket(inputReaderUtil.readVehiculeRegistrationNumber()).getVehiculeRegNumber(),
+        			 inputReaderUtil.readVehiculeRegistrationNumber());
+        assertEquals(ticketDAO.getTicket(inputReaderUtil.readVehiculeRegistrationNumber()).getParkingSpot().isAvailable(),
+        			 false);
+    }
+    
     @Test
     @DisplayName("Vérifie si le prix est généré et si la date de sortie est correctement renseignée dans la BDD")
     public void testParkingLotExit() throws Exception{
@@ -69,6 +83,14 @@ public class ParkingDataBaseIT {
         parkingService.processExitingVehicule();
         assertEquals(ticketDAO.getTicket(inputReaderUtil.readVehiculeRegistrationNumber()).getPrice(), 0);
         assertNotNull(ticketDAO.getTicket(inputReaderUtil.readVehiculeRegistrationNumber()).getOutTime());
+    }    
+    
+    @Test
+    public void testIfTheVehiculeRegistrationNumberIsUnknow() throws Exception
+    {
+        lenient().when(inputReaderUtil.readSelection()).thenReturn(1);
+        lenient().when(inputReaderUtil.readVehiculeRegistrationNumber()).thenReturn(null);
+        assertEquals(ticketDAO.getTicket(inputReaderUtil.readVehiculeRegistrationNumber()), null);
     }
-
+    
 }

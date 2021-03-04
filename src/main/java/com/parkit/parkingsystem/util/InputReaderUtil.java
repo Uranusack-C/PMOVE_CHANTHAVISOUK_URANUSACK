@@ -34,9 +34,9 @@ public class InputReaderUtil {
             throw e;
         }
     }
+    
+    public void setScan(Scanner scan) {
+    	this.scan = scan;
+    }
 
-	public void setScan(Scanner scan) {
-		
-		this.scan = scan;
-	}
 }
