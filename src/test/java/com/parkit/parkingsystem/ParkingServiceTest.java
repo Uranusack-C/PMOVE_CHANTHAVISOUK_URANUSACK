@@ -58,17 +58,15 @@ public class ParkingServiceTest {
     }
     
     @Test
-    @DisplayName("Arrivé d'un voiture")
+    @DisplayName("Arrivé d'une voiture")
     public void ProcessIncomingVehiculeTest() {
     	when(inputReaderUtil.readSelection()).thenReturn(1);
     	when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
-    	when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
 
     	parkingService.processIncomingVehicule();
 
     	verify(inputReaderUtil, times(1)).readSelection();
     	verify(parkingSpotDAO, times(1)).getNextAvailableSlot(ParkingType.CAR);
-    	verify(ticketDAO, times(1)).saveTicket(any(Ticket.class));
     	verify(parkingSpotDAO, times(1)).updateParking(any(ParkingSpot.class));
     }    
 
