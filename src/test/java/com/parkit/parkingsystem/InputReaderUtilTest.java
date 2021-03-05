@@ -26,7 +26,7 @@ public class InputReaderUtilTest {
 		inputReaderUtil.setScan(scan);
 		assertEquals(1, inputReaderUtil.readSelection());
 	}	
-
+ 
 	@Test
 	public void whenReaderUtilReturnAString() throws Exception {
 		Scanner scan = new Scanner(new ByteArrayInputStream("test".getBytes()));
